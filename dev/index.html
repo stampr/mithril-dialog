@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="cleartype" content="on">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+<script src="https://unpkg.com/mithril/mithril.js"></script>
+<script src="/mithril-dialog.js"></script>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const existingModel = { text: 'why, hello there.' };
+
+const PretendScreen = {
+  oninit: (vnode) => {
+    console.log('dev oninit');
+    vnode.state.dialog = {
+      model: null,
+      onclose: (event, saved) => {
+        console.log('dev onclose', {saved});
+        if (saved) {
+          vnode.state.final = vnode.state.dialog.model;
+        }
+      },
+      footer: [
+        m('button', {
+          onclick: () => {
+            // if enterCommits disabled, this is the only spot to get
+            // the model result.  otherwise onclose model
+            vnode.state.final = vnode.state.dialog.model;
+            vnode.state.dialog.model = null; // triggers model close
+          },
+        }, 'Save'),
+      ]
+    };
+    vnode.state.final = null;
+  },
+
+  view: (vnode) => {
+    console.log('dev view', {state: vnode.state, attrs: vnode.attrs});
+    return m('.container', [
+      m('button', {
+        onclick: () => {
+          vnode.state.dialog.model = { text: null };
+        },
+      }, 'create'),
+      m('button', {
+        onclick: () => {
+          vnode.state.dialog.model = Object.assign({}, existingModel);
+        },
+      }, 'load'),
+      m('h5', 'result'),
+      m('pre', JSON.stringify(vnode.state.dialog.model, null, 2)),
+      m('h5', 'final'),
+      m('pre', JSON.stringify(vnode.state.final, null, 2)),
+      m(MithrilDialog, {
+        dialog: vnode.state.dialog,
+      }, [
+        m('input.autofocus[type="text"]', {
+          oninput: (event) => {
+            vnode.state.dialog.model.text = event.target.value;
+          },
+          value: (vnode.state.dialog.model || {}).text,
+        })
+      ]),
+    ]);
+  }
+};
+m.mount(document.querySelector('#app'), PretendScreen);
+</script>
+</body>
+</html>

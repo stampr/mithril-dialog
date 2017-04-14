@@ -1,0 +1,43 @@
+{
+  "private": true,
+  "name": "mithril-dialog",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "concurrently \"nodemon --watch src -e js,html,json,css,svg --exec 'npm run' build\" \"npm run start\"",
+    "start": "./node_modules/.bin/http-server ./dev",
+    "quick:start": "npm run build && npm start",
+    "coverage": "./node_modules/.bin/nyc ./node_modules/.bin/mocha -r ./test/lib/helper --compilers js:babel-register test",
+    "lint:coverage": "npm run lint && npm run coverage",
+    "lint": "./node_modules/.bin/eslint ./src",
+    "test": "mocha -r ./test/lib/helper --compilers js:babel-register test"
+  },
+  "main": "./dist/mithril-dialog.cjs.js",
+  "module": "./dist/mithril-dialog.es2015.js",
+  "jsnext:main": "./dist/mithril-dialog.es2015.js",
+  "dependencies": {
+    "mithril": "^1.0.1"
+  },
+  "devDependencies": {
+    "babel-plugin-external-helpers": "^6.18.0",
+    "babel-preset-env": "^1.1.8",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-register": "^6.22.0",
+    "body-parser": "^1.17.1",
+    "concurrently": "^3.3.0",
+    "cors": "^2.8.1",
+    "eslint": "^3.16.1",
+    "expect": "^1.20.2",
+    "express": "^4.15.2",
+    "http-server": "^0.9.0",
+    "mocha": "^3.2.0",
+    "nodemon": "^1.11.0",
+    "nyc": "^10.1.2",
+    "reify": "^0.4.4",
+    "rollup": "^0.41.1",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-commonjs": "^7.0.0",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "source-map-support": "^0.4.10"
+  }
+}
